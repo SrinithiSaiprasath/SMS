@@ -18,11 +18,12 @@ import internalRoutes from './routes/internal.js';
 import { getLlmConfigSummary } from './lib/llm.js';
 import { BRAND } from './lib/brand.js';
 import { supabaseAdmin } from './lib/supabase.js';
+import { getCorsOptions } from './lib/corsOrigins.js';
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
 
-app.use(cors({ origin: process.env.CLIENT_URL ?? 'http://localhost:5173', credentials: true }));
+app.use(cors(getCorsOptions()));
 app.use(express.json());
 
 app.get('/api/health', (_req, res) => {
