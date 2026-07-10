@@ -1,6 +1,7 @@
 [build]
 builder = "NIXPACKS"
-buildCommand = "cd server && npm ci && npm run build"
+# --include=dev ensures TypeScript installs even when NODE_ENV=production
+buildCommand = "cd server && npm ci --include=dev && npm run build"
 watchPatterns = ["server/**", "railway.toml"]
 
 [deploy]
