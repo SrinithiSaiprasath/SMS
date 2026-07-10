@@ -1,0 +1,27 @@
+name: Dispatch scheduled reports
+
+on:
+  schedule:
+    - cron: '0 6 * * *' # Daily at 06:00 UTC (~11:30 IST)
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger report scheduler
+        env:
+          API_URL: ${{ secrets.API_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          if [ -z "$API_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "Skipping: set API_URL and CRON_SECRET repository secrets for production cron"
+            exit 0
+          fi
+          curl -sf -X POST "${API_URL%/}/api/internal/cron/dispatch-reports" \
+            -H "X-Cron-Secret: ${CRON_SECRET}" \
+            -H "X-Cron-Source: github-actions" \
+            -H "X-GitHub-Run-Id: ${GITHUB_RUN_ID}" \
+            -H "X-GitHub-Run-Attempt: ${GITHUB_RUN_ATTEMPT}" \
+            -H "X-GitHub-Workflow: ${GITHUB_WORKFLOW}" \
+            -H "Content-Type: application/json"
