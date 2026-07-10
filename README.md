@@ -20,25 +20,7 @@ AI-powered personal expense tracking for young urban India. Log expenses in natu
 - **PDF storage** — Reports persisted in Supabase Storage; download from app
 - **Scheduled reports** — Daily cron dispatches reports by user frequency
 - **Settings** — Edit profile, skills, auto-reports toggle, email delivery history
-
-## API endpoints
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/api/onboarding/status` | Onboarding progress |
-| POST | `/api/onboarding/step` | Save onboarding step |
-| POST | `/api/onboarding/complete` | Finish onboarding |
-| POST | `/api/expenses/parse` | Parse expense message |
-| POST | `/api/expenses/confirm` | Confirm split/high amount |
-| GET | `/api/expenses` | Transaction history |
-| POST | `/api/reports/generate` | Trigger report pipeline |
-| POST | `/api/reports/:id/retry` | Retry failed report |
-| GET | `/api/reports/:id/pdf` | Signed PDF download URL |
-| GET | `/api/reports/deliveries/recent` | Recent email deliveries |
-| GET/PATCH | `/api/profile` | User profile + schedule |
-| POST | `/api/internal/cron/dispatch-reports` | Scheduled reports (CRON_SECRET) |
-
-
+- 
 ## Expense examples
 
 ```
