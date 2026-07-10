@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import type { CorsOptions } from 'cors';
 import dotenv from 'dotenv';
 
 dotenv.config({ path: '../.env' });
@@ -18,7 +19,32 @@ import internalRoutes from './routes/internal.js';
 import { getLlmConfigSummary } from './lib/llm.js';
 import { BRAND } from './lib/brand.js';
 import { supabaseAdmin } from './lib/supabase.js';
-import { getCorsOptions } from './lib/corsOrigins.js';
+
+function getCorsOptions(): CorsOptions {
+  const allowed = new Set<string>();
+  for (const key of ['CLIENT_URL', 'APP_URL'] as const) {
+    const value = process.env[key]?.trim().replace(/\/$/, '');
+    if (value) allowed.add(value);
+  }
+  for (const entry of process.env.ALLOWED_ORIGINS?.split(',') ?? []) {
+    const origin = entry.trim().replace(/\/$/, '');
+    if (origin) allowed.add(origin);
+  }
+  if (allowed.size === 0) allowed.add('http://localhost:5173');
+
+  return {
+    origin(origin, callback) {
+      if (!origin) {
+        callback(null, true);
+        return;
+      }
+      const ok =
+        allowed.has(origin) || /^https:\/\/[\w-]+\.vercel\.app$/i.test(origin);
+      callback(null, ok);
+    },
+    credentials: true,
+  };
+}
 
 const app = express();
 const PORT = process.env.PORT ?? 3001;
